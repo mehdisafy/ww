@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gerer vos depences</title>
+</head>
+<body>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .container {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+        background-color: #f4f4f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .intsc, .dspls {
+        flex: 1;
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        margin: 10px;
+    }
+    .intgrp {
+        margin-bottom: 15px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+    }
+    input, textarea, button {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+    button {
+        background-color: #5cb85c;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    button:hover {
+        background-color: #4cae4c;
+    }
+    .dspls {
+        max-height: 300px;
+        overflow-y: auto;
+        background-color: white;
+        border-radius: 8px;
+        margin: 10px;
+        padding: 20px;
+        flex: 1;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .ex {
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+        padding-bottom: 10px;
+    }
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+            align-items: center;
+        }
+        .intsc, .dspls {
+            width: 100%;
+            margin: 0;
+            padding: 15px;
+        }
+        .ex, .expe {
+            grid-template-areas:
+                "date"
+                "description"
+                "amount"
+                "buttons";
+            grid-template-columns: 1fr;
+            grid-gap: 10px;
+        }
+        .values div, .btnncnt {
+            text-align: center;
+            width: 100%;
+        }
+        .btnncnt {
+            flex-direction: column;
+            gap: 5px;
+        }
+    }
+    .rd{
+        color: red;
+    }
+    .expe {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr) auto;
+        width: 100%;
+    }
+    .expe div {
+        text-align: center;
+        padding: 10px;
+    }
+    .btnncnt {
+        grid-column: span 4;
+        display: flex;
+        justify-content: space-evenly;
+        padding: 10px;
+    }
+    h1{
+        text-align: center;
+        color: #4cae4c;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+    .bn{
+        display: none;
+    }
+    .dspls {
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: white;
+    border-radius: 8px;
+    margin: 10px;
+    padding: 20px;
+    flex: 1;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+</style>
+<div> <h1>Gestion d'argent <i class="fa-solid fa-money-bill"></i></h1></div>
+<div class="container">
+   
+    <div class="intsc">
+        <div class="intgrp">
+            <label for="date">choisisez la date <span class="rd">*</span>:</label>
+            <input type="date" id="date" required>
+        </div>
+        <div class="intgrp">
+            <label for="description">ecrire votre description <span class="rd">*</span>:</label>
+            <textarea id="description" placeholder="taper ici ..." required></textarea>
+        </div>
+        <div class="intgrp">
+            <label for="amount">choisisez votre montant <span class="rd">*</span>:</label>
+            <input type="number" id="amount" placeholder="EXP:1000 DHs" required>
+        </div>
+        <button class="btk" onclick="zed()">AJOUTER</button>
+        <button class="bn" onclick="trmn()">TERMINE!</button>
+    </div>
+    <div class="dspls" id="dsp">
+        <div class="ex">
+            <span>Date</span>
+            <span>Description</span>
+            <span>Amount</span>
+        </div>
+    </div>
+</div>
+<script>
+    let iddd = 0;
+    let tbdljd = null;
+    let editjdid = null;
+
+    function zed() {
+        let date = document.getElementById('date').value;
+        let description = document.getElementById('description').value;
+        let amount = document.getElementById('amount').value;
+        let dsp = document.getElementById('dsp');
+
+        if (date && description && amount) {
+            let dvv = document.createElement('div');
+            dvv.className = 'expe';
+            dvv.id = 'ess-' + iddd++;
+
+            dvv.innerHTML = `
+                <div>${date}</div>
+                <div>${description}</div>
+                <div>${amount} DHs</div>
+            `;
+
+            let edbtnn = document.createElement('button');
+            edbtnn.textContent = 'EDITER';
+            edbtnn.addEventListener('click', () => swb(dvv.id, date, description, amount));
+
+            let dltbtnn = document.createElement('button');
+            dltbtnn.textContent = 'SUPPRIMER';
+            dltbtnn.addEventListener('click', () => mssh(dvv.id));
+
+            let btncnt = document.createElement('div');
+            btncnt.className = 'btnncnt';
+            btncnt.appendChild(edbtnn);
+            btncnt.appendChild(dltbtnn);
+
+            dvv.appendChild(btncnt);
+
+            dsp.appendChild(dvv);
+
+            document.getElementById('date').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('amount').value = '';
+        } else {
+            alert("S'IL VOUS PELEZ REMLPISSEZ TOUTE LES CHAMPS");
+        }
+    }
+
+    function mssh(iddd) {
+        let div = document.getElementById(iddd);
+        if (div) {
+            div.remove();
+        }
+    }
+
+    function swb(iddd, date, description, amount) {
+        editjdid = iddd;
+        document.getElementById('date').value = date;
+        document.getElementById('description').value = description;
+        document.getElementById('amount').value = amount;
+
+        document.querySelector(".bn").style.display = "block";
+        document.querySelector(".btk").style.display = "none";
+    }
+
+    function trmn() {
+        if (editjdid) {
+            let divjdid = document.getElementById(editjdid);
+            if (divjdid) {
+                divjdid.querySelector('div:nth-child(1)').textContent = document.getElementById('date').value;
+                divjdid.querySelector('div:nth-child(2)').textContent = document.getElementById('description').value;
+                divjdid.querySelector('div:nth-child(3)').textContent = document.getElementById('amount').value + ' DHs';
+            }
+            document.getElementById('date').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('amount').value = '';
+            document.querySelector(".bn").style.display = "none";
+            document.querySelector(".btk").style.display = "block";
+            editjdid = null;
+        } else {
+            console.error("AUCUNE ENTREE N'EST ACTUELLEMENT EN COURS DE MODIFICATION .");
+        }
+    }
+</script>
+<script src="https://kit.fontawesome.com/1ea117327e.js" crossorigin="anonymous"></script>
+</body>
+</html>
